@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block main_content %}
+
+{% if trip_list %}
+<ul>
+    {% for trip in trip_list %}
+    <li> <a href="{% url 'tracker:trip_detail' trip.id %}"> {{trip.title}} </a> </li>
+    {% endfor %}
+
+</ul>
+
+{% else %}
+    <p> There are no trip that is registered</p>
+
+{% endif %}
+<a href="{% url 'tracker:create_trip'%}"> Add a trip here</a>
+{% endblock %}
