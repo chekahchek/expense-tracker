@@ -1,0 +1,145 @@
+{% extends "base_expense.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+ <!-- Button trigger edit modal -->
+<button type="button" class="btn btn-primary" id="editExpenseModal" data-toggle="modal" data-target="#editExpense" style="display:None">
+  Edit Expense
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="editExpense" tabindex="-1" role="dialog" aria-labelledby="editExpenseLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editExpenseLabel">Add an expense</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="editExpenseModalBody">
+        <form action="" method="post" >
+            {% csrf_token %}
+            {{ form|crispy }}
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <input type="submit" class="btn btn-primary" value="Submit">
+        </form>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<h1>Expenses</h1> <br>
+{% if page_obj %}
+    <table class="table" id="table">
+        <tr>
+            <th scope="col">Description</th>
+            <th scope="col">Expense</th>
+            <th scope="col">Expense Type</th>
+            <th scope="col">Date</th>
+        </tr>
+        <tbody>
+        {% for expense in page_obj %}
+        <tr scope="row" class="record">
+            <td>{{expense.description}} <a href="{% url 'tracker:trip_expense_update' trip.id expense.id%}" class="fas fa-edit" id="editExpense"></a> <a href="#" class="fas fa-trash-alt"></a> </td>
+            <td>{{expense.expense}}</td>
+            <td>{{expense.expense_type}}</td>
+            <td>{{expense.transaction_date | default_if_none:" " | date:"Y-m-d"}}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+              <a href="?page={{ page_obj.previous_page_number }}">« Prev</a>
+
+              {% if page_obj.number > 3 %}
+                <a href="?page=1">1</a>
+                {% if page_obj.number > 4 %}
+                  <span>...</span>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+              {% if page_obj.number == num %}
+                <a href="?page={{ num }}">{{ num }}</a>
+              {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a href="{% url 'tracker:trip_expense' trip.id %}?page={{ num }}">{{ num }}</a>
+              {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+              {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %}
+                <span>...</span>
+                <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+              {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %}
+                <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+              {% endif %}
+
+              <a href="?page={{ page_obj.next_page_number }}">Next »</a>
+            {% endif %}
+        </span>
+    </div>
+
+{% endif %}
+
+
+<script>
+$(".fa-edit").on("click", function(e){
+    e.preventDefault();
+    var $this = $(this);
+    let description = $this.parents(".record").find('td').eq(0).text();
+    let expense = $this.parents(".record").find('td').eq(1).text();
+    let expense_type = $this.parents(".record").find('td').eq(2).text();
+    let transaction_date = $this.parents(".record").find('td').eq(3).text();
+    $("#editExpenseModalBody input[name='description']").val(description)
+    $("#editExpenseModalBody input[name='expense']").val(expense)
+    $("#editExpenseModalBody select[name='expense_type']").val(expense_type)
+    $("#editExpenseModalBody input[name='transaction_date']").val(transaction_date)
+    $("#editExpenseModalBody").attr("action", $this.attr('href'))
+    $("#editExpense").modal("show");
+    return false;
+});
+
+
+$("#editExpenseModalBody").on("submit", function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var $this = $(this);
+    var valid = true;
+
+    if(valid){
+        $.ajax({
+            url : $this.attr("action"),
+            type : "POST",
+            data : {
+                description: $("#editExpenseModalBody input[name='description']").val(),
+                expense : $("#editExpenseModalBody input[name='expense']").val(),
+                expense_type : $("#editExpenseModalBody select[name='expense_type']").val(),
+                transaction_date : $("#editExpenseModalBody input[name='transaction_date']").val(),
+                csrfmiddlewaretoken:$("#editExpenseModalBody input[name='csrfmiddlewaretoken']").val()
+            },
+            dataType : "json",
+            success : function(resp){
+                if (resp.message == "success"){
+                    $("#editExpense").modal("hide");
+                    window.location.reload();
+                }else{
+                    console.log(resp.message);
+                }
+            }
+        })
+    }
+});
+
+
+</script>
+
+{% endblock %}

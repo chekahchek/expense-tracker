@@ -2,12 +2,22 @@
 {% block main_content %}
 
 {% if trip_list %}
-<ul>
+<table class="table table-hover">
+    <tr>
+        <th scope="col">Trip</th>
+        <th scope="col">Budget</th>
+        <th scope="col">Departure Date</th>
+        <th scope="col">Return Date</th>
+    </tr>
     {% for trip in trip_list %}
-    <li> <a href="{% url 'tracker:trip_detail' trip.id %}"> {{trip.title}} </a> </li>
+    <tr scope="row">
+        <td><a href="{% url 'tracker:trip_detail' trip.id %}"> {{trip.title}}</td>
+        <td>{{trip.budget | default_if_none:" "}}</td>
+        <td>{{trip.depart_date | default_if_none:" "}}</td>
+        <td>{{trip.return_date | default_if_none:" "}}</td>
+    </tr>
     {% endfor %}
-
-</ul>
+</table>
 
 {% else %}
     <p> There are no trip that is registered</p>

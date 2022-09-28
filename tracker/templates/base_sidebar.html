@@ -8,22 +8,12 @@ The sidebar isn't proper for smaller screens imo, so this dropdown menu can keep
     Trip
     </a>
     <div class="dropdown-menu" aria-labelledby="smallerscreenmenu">
-        <a class="dropdown-item" href="#">Overview</a>
-        <a class="dropdown-item" href="#">Expenses</a>
-        <a class="dropdown-item" href="#">Blog</a>
-        <a class="dropdown-item" href="#">Share trip</a>
+        <a class="dropdown-item" href="{% url 'tracker:trip_detail' trip.id%}">Overview</a>
+        <a class="dropdown-item" href="{% url 'tracker:trip_expense' trip.id%}">Expenses</a>
+        <a class="dropdown-item" href="{% url 'tracker:trip_blog' trip.id%}">Blog</a>
+        <a class="dropdown-item" href="{% url 'tracker:share_trip' trip.id%}">Share trip</a>
     </div>
 </li>
-
-<!--<li class="nav-item dropdown d-sm-block d-md-none">-->
-<!--    <a class="nav-link dropdown-toggle" href="#" id="smallerscreenlogout" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--    {{user.username}}-->
-<!--    </a>-->
-<!--    <div class="dropdown-menu" aria-labelledby="smallerscreenmenulogout">-->
-<!--        <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>-->
-<!--    </div>-->
-<!--</li>-->
-<!-- Smaller devices menu END -->
 
 {% endblock %}
 
@@ -37,38 +27,26 @@ The sidebar isn't proper for smaller screens imo, so this dropdown menu can keep
         <!-- d-* hiddens the Sidebar in smaller devices. Its itens can be kept on the Navbar 'Menu' -->
         <!-- Bootstrap List Group -->
         <ul class="list-group sticky-top sticky-offset">
-            <!-- Separator with title -->
-            <!--<li class="list-group-item sidebar-separator-title text-muted d-flex align-items-center menu-collapsed">-->
-            <!--    <small>MAIN MENU</small>-->
-            <!--</li>-->
-            <!-- /END Separator -->
-            <!-- Menu with submenu -->
-
-
-            <a href="#" class="bg-dark list-group-item list-group-item-action">
+            <a href="{% url 'tracker:trip_detail' trip.id%}" class="bg-dark list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-start align-items-center">
-                    <span class="fa fa-tasks fa-fw mr-3"></span>
                     <span class="menu-collapsed">Overview</span>
                 </div>
             </a>
 
-            <a href="#" class="bg-dark list-group-item list-group-item-action">
+            <a href="{% url 'tracker:trip_expense' trip.id%}" class="bg-dark list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-start align-items-center">
-                    <span class="fa fa-tasks fa-fw mr-3"></span>
                     <span class="menu-collapsed">Expenses</span>
                 </div>
             </a>
 
-            <a href="#" class="bg-dark list-group-item list-group-item-action">
+            <a href="{% url 'tracker:trip_blog' trip.id%}" class="bg-dark list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-start align-items-center">
-                    <span class="fa fa-tasks fa-fw mr-3"></span>
                     <span class="menu-collapsed">Blog</span>
                 </div>
             </a>
 
-            <a href="#" class="bg-dark list-group-item list-group-item-action">
+            <a href="{% url 'tracker:share_trip' trip.id%}" class="bg-dark list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-start align-items-center">
-                    <span class="fa fa-tasks fa-fw mr-3"></span>
                     <span class="menu-collapsed">Share trip</span>
                 </div>
             </a>
@@ -83,7 +61,8 @@ The sidebar isn't proper for smaller screens imo, so this dropdown menu can keep
     <!-- MAIN -->
     <div class="col py-3">
 
-       {% block content %} {% endblock %}
+       {% block modal %} {% endblock %}
+       {% block sidecontent%} {% endblock %}
     </div>
     <!-- Main Col END -->
 

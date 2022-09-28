@@ -1,8 +1,32 @@
-{% extends "base_sidebar.html" %}
+{% extends "base_expense.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
 
-<h1> Placeholder page </h1>
 
+<h1> Overview </h1>
+<br>
+<b>Trip: </b> {{trip.title}} <br>
+{% if trip.depart_date %} <b>Depart Date: </b> {{trip.depart_date}} <br> {% endif %}
+{% if trip.return_date %} <b>Return Date: </b> {{trip.return_date}} <br> {% endif %}
+{% if trip.budget %} <b>Budget: </b> {{trip.budget}} <br> {% endif %}
+{% if total_expense %} <b>Total Expenses: </b> {{total_expense.expense__sum}} <br><br>{% endif %}
+
+{% if expense_breakdown %}
+<table class="table">
+    <tr>
+        <th scope="col">Expense Type</th>
+        <th scope="col">Total</th>
+    </tr>
+{% for expense in expense_breakdown %}
+<tr scope="row">
+    <td> {{expense.expense_type}} </td>
+    <td> {{expense.total_expense}} </td>
+</tr>
+{% endfor%}
+</table>
+{% endif%}
+
+<br><br>
 <a href="{% url 'tracker:share_trip' trip_id %}"> Share trip with other users </a>
 
 {% endblock %}

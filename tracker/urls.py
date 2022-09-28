@@ -9,6 +9,9 @@ urlpatterns = [
     path('trip', views.TripListView.as_view(), name='trip_list'),
     path('trip/create', views.CreateTripView.as_view(), name='create_trip'),
     path('trip/<int:pk>', views.TripDetaiView.as_view(), name='trip_detail'),
+    path('trip/<int:pk>/expense', views.TripExpense.as_view(), name='trip_expense'),
+    path('trip/<int:pk>/expense/edit/<int:expense_id>', views.TripExpenseUpdate.as_view(), name='trip_expense_update'),
+    path('trip/<int:pk>/blog', views.TripBlog.as_view(), name='trip_blog'),
     path('trip/<int:pk>/share', views.ShareTripView.as_view(), name='share_trip'),
     path('testing', views.Debugging.as_view(), name='debug'),
 ]

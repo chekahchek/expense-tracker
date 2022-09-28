@@ -69,3 +69,21 @@ body {
   text-align: right;
   padding-left: 10px;
 }
+
+
+#addExpenseModal {
+    float: right;
+}
+
+
+tr .fas {
+    opacity: 0;
+}
+
+tr:hover .fas {
+    opacity: 1;
+
+}
+
+
+
