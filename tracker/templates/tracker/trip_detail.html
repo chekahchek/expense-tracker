@@ -1,8 +1,7 @@
-{% extends "base_expense.html" %}
-{% load crispy_forms_tags %}
-{% block content %}
+{% extends "base_sidebar.html" %}
+{% block sidecontent %}
 
-
+{% include "modal.html" %}
 <h1> Overview </h1>
 <br>
 <b>Trip: </b> {{trip.title}} <br>
@@ -28,5 +27,12 @@
 
 <br><br>
 <a href="{% url 'tracker:share_trip' trip_id %}"> Share trip with other users </a>
+
+<script>
+$(document).ready(function(){
+    $('#addModal').text("Add expense");
+    $('#addDataLabel').text("Add expense");
+})
+</script>
 
 {% endblock %}

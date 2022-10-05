@@ -1,27 +1,101 @@
 {% extends "base.html" %}
+{% load static %}
 {% block main_content %}
 
+<script>
+$(document).ready(function(){
+    $('#addModal').text("Add a trip");
+    $('#addDataLabel').text("Add a trip");
+})
+</script>
+
+<style>
+#addModal {
+    margin-right : 0.5%;
+    margin-top : 0.5%;
+}
+</style>
+
+
+<div class="col py-3">
+{% include "modal.html" %}
+<h2> List of trips </h2>
+</div>
+
 {% if trip_list %}
-<table class="table table-hover">
+<table class="table" id="table">
     <tr>
         <th scope="col">Trip</th>
         <th scope="col">Budget</th>
         <th scope="col">Departure Date</th>
         <th scope="col">Return Date</th>
     </tr>
+    <tbody>
     {% for trip in trip_list %}
-    <tr scope="row">
-        <td><a href="{% url 'tracker:trip_detail' trip.id %}"> {{trip.title}}</td>
+    <tr scope="row" class="record">
+        <td><a href="{% url 'tracker:trip_detail' trip.id %}"> {{trip.title}} <a href="{% url 'tracker:trip_update' trip.id %}" class="fas fa-edit" id="editTrip"></a> <a href="{% url 'tracker:trip_delete' trip.id%}" class="fas fa-trash-alt"></a></td>
         <td>{{trip.budget | default_if_none:" "}}</td>
-        <td>{{trip.depart_date | default_if_none:" "}}</td>
-        <td>{{trip.return_date | default_if_none:" "}}</td>
+        <td>{{trip.depart_date | default_if_none:" " | date:"Y-m-d"}}</td>
+        <td>{{trip.return_date | default_if_none:" " | date:"Y-m-d"}}</td>
     </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 {% else %}
     <p> There are no trip that is registered</p>
 
 {% endif %}
-<a href="{% url 'tracker:create_trip'%}"> Add a trip here</a>
+
+
+<script src="{% static 'script.js' %}"></script>
+<script>
+$(".fa-edit").on("click", function(e){
+    e.preventDefault();
+    var $this = $(this);
+    let title = $this.parents(".record").find('td').eq(0).text();
+    let budget = $this.parents(".record").find('td').eq(1).text();
+    let depart_date = $this.parents(".record").find('td').eq(2).text();
+    let return_date = $this.parents(".record").find('td').eq(3).text();
+    $("#editModalBody input[name='title']").val(title)
+    $("#editModalBody input[name='budget']").val(budget)
+    $("#editModalBody input[name='depart_date']").val(depart_date)
+    $("#editModalBody input[name='return_date']").val(return_date)
+    $("#editModalBody").attr("action", $this.attr('href'))
+    $("#editData").modal("show");
+    return false;
+});
+
+
+$("#editModalBody").on("submit", function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var $this = $(this);
+
+    $.ajax({
+        url : $this.attr("action"),
+        type : "POST",
+        data : {
+            title: $("#editModalBody input[name='title']").val(),
+            budget : $("#editModalBody input[name='budget']").val(),
+            depart_date : $("#editModalBody input[name='depart_date']").val(),
+            return_date : $("#editModalBody input[name='return_date']").val(),
+            csrfmiddlewaretoken:$("#editModalBody input[name='csrfmiddlewaretoken']").val()
+        },
+        dataType : "json",
+        success : function(resp){
+            if (resp.message == "success"){
+                $("#editData").modal("hide");
+                window.location.reload();
+            }else{
+                console.log(resp.message);
+            }
+        }
+    })
+
+});
+
+</script>
+
 {% endblock %}
+

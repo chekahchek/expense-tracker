@@ -1,5 +1,5 @@
 from django import forms
-from tracker.models import Trip, Expenses, expense_type_options
+from tracker.models import Trip, Expenses
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -9,6 +9,7 @@ class CreateTripForm(forms.ModelForm):
     class Meta:
         model = Trip
         fields = ['title', 'budget', 'depart_date', 'return_date']
+        widgets = {'depart_date' : DateInput(), 'return_date' : DateInput()}
 
 class ShareTripForm(forms.Form):
     username = forms.CharField(required=True, max_length=200, min_length=1, strip=True)
