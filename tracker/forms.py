@@ -1,5 +1,5 @@
 from django import forms
-from tracker.models import Trip, Expenses
+from tracker.models import Trip, Expenses, Blog, Comment
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -25,3 +25,8 @@ class AddExpenseForm(forms.ModelForm):
         if not cleaned_data.get('transaction_date'):
             cleaned_data['transaction_date'] = None
         return cleaned_data
+
+class CreateBlogForm(forms.ModelForm):
+    class Meta:
+        model = Blog
+        fields = ['title', 'post']

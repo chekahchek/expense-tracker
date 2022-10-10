@@ -2,8 +2,6 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block sidecontent %}
-
-
 {% include "modal.html" %}
 
 <h1>Expenses</h1> <br>
@@ -64,57 +62,5 @@
 {% endif %}
 
 <script src="{% static 'script.js' %}"></script>
-<script>
-$(document).ready(function(){
-    $('#addModal').text("Add expense");
-    $('#addDataLabel').text("Add expense");
-})
-
-$(".fa-edit").on("click", function(e){
-    e.preventDefault();
-    var $this = $(this);
-    let description = $this.parents(".record").find('td').eq(0).text();
-    let expense = $this.parents(".record").find('td').eq(1).text();
-    let expense_type = $this.parents(".record").find('td').eq(2).text();
-    let transaction_date = $this.parents(".record").find('td').eq(3).text();
-    $("#editModalBody input[name='description']").val(description)
-    $("#editModalBody input[name='expense']").val(expense)
-    $("#editModalBody select[name='expense_type']").val(expense_type)
-    $("#editModalBody input[name='transaction_date']").val(transaction_date)
-    $("#editModalBody").attr("action", $this.attr('href'))
-    $("#editData").modal("show");
-    return false;
-});
-
-
-$("#editModalBody").on("submit", function(e){
-    e.preventDefault();
-    e.stopPropagation();
-    var $this = $(this);
-
-    $.ajax({
-        url : $this.attr("action"),
-        type : "POST",
-        data : {
-            description: $("#editModalBody input[name='description']").val(),
-            expense : $("#editModalBody input[name='expense']").val(),
-            expense_type : $("#editModalBody select[name='expense_type']").val(),
-            transaction_date : $("#editModalBody input[name='transaction_date']").val(),
-            csrfmiddlewaretoken:$("#editModalBody input[name='csrfmiddlewaretoken']").val()
-        },
-        dataType : "json",
-        success : function(resp){
-            if (resp.message == "success"){
-                $("#editData").modal("hide");
-                window.location.reload();
-            }else{
-                console.log(resp.message);
-            }
-        }
-    })
-
-});
-
-</script>
 
 {% endblock %}

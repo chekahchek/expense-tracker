@@ -62,6 +62,7 @@ class Blog(models.Model):
     title = models.CharField(max_length = 150)
     post = models.TextField()
     comments = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Comment', related_name='comments_owned')
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 class Comment(models.Model):

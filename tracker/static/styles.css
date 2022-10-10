@@ -1,5 +1,6 @@
 body {
     padding-top: 56px;
+    background-color: #f8f9fa!important
 }
 
 .sticky-offset {
@@ -70,6 +71,93 @@ body {
   padding-left: 10px;
 }
 
+.p-4 {
+  padding: 1.5rem!important;
+}
+
+.shadow-sm {
+  box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}
+
+.user-dashboard-info-box .title {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 30px 0;
+}
+
+.user-dashboard-info-box .candidates-list td {
+  vertical-align: middle;
+}
+
+.user-dashboard-info-box td li {
+  margin: 0 4px;
+}
+
+.user-dashboard-info-box .table thead th {
+  border-bottom: none;
+}
+
+.table.manage-candidates-top th {
+  border: 0;
+}
+
+.table.manage-candidates-top {
+  min-width: 650px;
+}
+
+.table.manage-candidates-top th {
+  padding-left: 0;
+}
+
+.user-dashboard-info-box .candidate-list-details ul {
+  color: #969696;
+}
+
+/* Candidate List */
+.candidate-list {
+  background: #ffffff;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border-bottom: 1px solid #eeeeee;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 20px;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+.candidate-list-title {
+  margin-bottom: 5px;
+}
+
+.candidate-list-details ul {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-bottom: 0px;
+}
+.candidate-list-details ul li {
+  margin: 5px 10px 5px 0px;
+  font-size: 15px;
+}
+
+
+.bg-white {
+  background-color: #ffffff !important;
+}
+
+.shadow-sm {
+  box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}
+
 
 #addModal {
     float: right;
@@ -83,6 +171,32 @@ tr .fas {
 tr:hover .fas {
     opacity: 1;
 
+}
+
+.spacer {
+    padding: 10px;
+}
+
+.blogentry {
+    padding: 15px 0px 15px 0px;
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-color: #b6b7b9;
+
+}
+
+.blogtitle h4 {
+    margin-bottom: 0px;
+}
+
+.blogdate {
+    color: #969696;
+    font-weight: 100;
+    font-size: smaller;
+}
+
+.blogpost {
+    padding-top: 10px;
 }
 
 

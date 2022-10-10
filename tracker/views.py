@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, JsonResponse
 from django.urls import reverse_lazy, reverse
-from tracker.forms import CreateTripForm, ShareTripForm, AddExpenseForm
+from tracker.forms import CreateTripForm, ShareTripForm, AddExpenseForm, CreateBlogForm
 from django.core.paginator import Paginator
 from tracker.utils import UpdateBaseClass, check_user_has_access_to_trip, add_expense, DeleteBaseClass
 
@@ -21,8 +21,9 @@ class ShareTripView(LoginRequiredMixin, View):
         if user_can_access:
             username_invalid = request.session.get('username_invalid', False)
             if ( username_invalid ) : del(request.session['username_invalid'])
+            this_trip = Trip.objects.get(pk=pk)
             form = ShareTripForm()
-            ctx = {'form' : form, 'trip_id': pk, 'username_invalid': username_invalid}
+            ctx = {'form' : form, 'trip': this_trip, 'username_invalid': username_invalid}
             return render(request, self.template_name, ctx)
         else:
             raise Http404('Access denied')
@@ -148,12 +149,33 @@ class TripBlog(LoginRequiredMixin, DetailView):
         user_can_access = check_user_has_access_to_trip(trip_id=pk, request_user_id=request.user.id)
         if user_can_access:
             this_trip = Trip.objects.get(pk=pk)
-            ctx = {'trip': this_trip}
+            blog_posts = Blog.objects.filter(trip=this_trip).order_by('id').reverse()
+            ctx = {'trip': this_trip, 'blog_posts' : blog_posts}
             return render(request, self.template_name, ctx)
         else:
             raise Http404('Access denied')
 
+class TripBlogCreate(LoginRequiredMixin, DetailView):
+    template_name = 'tracker/create_blog_entry.html'
 
+    def get(self, request, pk):
+        user_can_access = check_user_has_access_to_trip(trip_id=pk, request_user_id=request.user.id)
+        if user_can_access:
+            this_trip = Trip.objects.get(pk=pk)
+            form = CreateBlogForm()
+            ctx = {'trip': this_trip, 'form' : form}
+            return render(request, self.template_name, ctx)
+        else:
+            raise Http404('Access denied')
+
+    def post(self, request, pk):
+        this_trip = Trip.objects.get(pk=pk)
+        blog = Blog(trip=this_trip,
+                    title=(request.POST['title']),
+                    post=request.POST['post'],
+                    )
+        blog.save()
+        return redirect(reverse('tracker:trip_blog', args=[pk]))
 
 #Debugging
 class Debugging(LoginRequiredMixin, View):

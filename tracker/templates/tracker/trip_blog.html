@@ -2,5 +2,22 @@
 {% load crispy_forms_tags %}
 {% block sidecontent %}
 
+<a class="btn btn-primary" id="addModal" href="{% url 'tracker:trip_blog_create' trip.id%}"> New Blog Entry </a>
+<h1>Blog</h1>
+<div class='spacer'></div>
 
+{% if blog_posts%}
+{% for blog in blog_posts %}
+<div class='blogentry'>
+    <div class='blogtitle'><h4>{{blog.title}}</h4></div>
+    <div class='blogdate'>
+        <i class='far fa-calendar-alt'>
+        {{blog.created_at}}
+        </i>
+    </div>
+    <div class='blogpost'>{{blog.post | truncatechars:600}}</div>
+</div>
+
+{% endfor %}
+{% endif %}
 {% endblock %}

@@ -1,7 +1,8 @@
 {% extends "base_sidebar.html" %}
+{% load static %}
 {% block sidecontent %}
-
 {% include "modal.html" %}
+
 <h1> Overview </h1>
 <br>
 <b>Trip: </b> {{trip.title}} <br>
@@ -27,12 +28,5 @@
 
 <br><br>
 <a href="{% url 'tracker:share_trip' trip_id %}"> Share trip with other users </a>
-
-<script>
-$(document).ready(function(){
-    $('#addModal').text("Add expense");
-    $('#addDataLabel').text("Add expense");
-})
-</script>
-
+<script src="{% static 'script.js' %}"></script>
 {% endblock %}
