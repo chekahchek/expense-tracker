@@ -118,7 +118,7 @@ class TripExpense(LoginRequiredMixin, DetailView): #List of all the expenses of 
             this_trip = Trip.objects.get(pk=pk)
             form = AddExpenseForm()
             all_expenses = Expenses.objects.filter(trip=this_trip).order_by('id').reverse() #Reverse so that the latest entry appears at the top
-            paginator = Paginator(all_expenses, 5)
+            paginator = Paginator(all_expenses, 25)
             page_num = request.GET.get('page')
             page_obj = paginator.get_page(page_num)
             ctx = {'trip': this_trip, 'form': form, 'page_obj': page_obj}
