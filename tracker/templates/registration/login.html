@@ -14,17 +14,34 @@
 <!--<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+{% load static %}
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
 
-
-
+<body>
 {% if form.errors %}
   <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
 
+<div class='form-outline'>
 <form method="post" action="{% url 'login' %}">
 {% csrf_token %}
-{{ form.as_p }}
+
+{% for field in form %}
+        {% if field.label == "Username" %} <input class='input-field' type='text' name="username" required placeholder='Username'> <br><br> {% endif %}
+        {% if field.label == "Password" %} <input class='input-field' type='password' name="password" required placeholder='Password'> <br><br>{% endif %}
+{% endfor %}
+
 <input type="submit" class="btn btn-primary" value="Login" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 
+<br>
+
+Or sign in with: <br>
+
+<a href="{% url 'social:begin' 'github' %}?next={{ next }}"> <button type="button" class="btn btn-link btn-floating mx-1"> <i class="fab fa-github"></i> </button> </a>
+</div>
+
+</body>

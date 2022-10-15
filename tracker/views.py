@@ -8,9 +8,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404, JsonResponse
 from django.urls import reverse_lazy, reverse
-from tracker.forms import CreateTripForm, ShareTripForm, AddExpenseForm, CreateBlogForm
+from tracker.forms import CreateTripForm, ShareTripForm, AddExpenseForm, CreateBlogForm, CommentForm
 from django.core.paginator import Paginator
 from tracker.utils import UpdateBaseClass, check_user_has_access_to_trip, add_expense, DeleteBaseClass
+
+
+class HomeView(View):
+    def get(self, request):
+        _url = '/accounts/login/?next=' + reverse('tracker:trip_list') #accounts/login/?next=/trip
+        return redirect(_url)
 
 
 class ShareTripView(LoginRequiredMixin, View):
@@ -41,11 +47,7 @@ class ShareTripView(LoginRequiredMixin, View):
             return redirect(reverse('tracker:share_trip', args=[pk]))
 
 
-class HomeView(View):
-    def get(self, request):
-        _url = '/accounts/login/?next=' + reverse('tracker:trip_list') #accounts/login/?next=/trip
-        return redirect(_url)
-
+#************************************************* TRIP *************************************************************
 class TripListView(LoginRequiredMixin, ListView):
     template_name = 'tracker/trip_list.html'
 
@@ -54,13 +56,13 @@ class TripListView(LoginRequiredMixin, ListView):
         form = CreateTripForm()
         if request.user.is_authenticated:
             try:
-                trip_list = Trip.objects.filter(groups__in=[request.user.id])
+                trip_list = Trip.objects.filter(groups__in=[request.user.id]) #Get all the trips thtat user has access to
             except:
-                pass
+                pass #If user has no trip, then pass in an empty list
         ctx = {'trip_list' : trip_list, 'form' : form}
         return render(request, self.template_name, ctx)
 
-    def post(self, request, pk=None):
+    def post(self, request, pk=None): #When user creates a new trip
         this_trip = Trip(title=request.POST['title'],
                          budget=request.POST['budget'] if request.POST['budget'] != "" else None,
                          depart_date=request.POST['depart_date'] if request.POST['depart_date'] != "" else None,
@@ -72,7 +74,7 @@ class TripListView(LoginRequiredMixin, ListView):
         return redirect(reverse('tracker:trip_list'))
 
 
-class TripUpdate(UpdateBaseClass):
+class TripUpdate(UpdateBaseClass): #When user updates his trip information
     def __init__(self):
         model = Trip
         modelform = CreateTripForm
@@ -80,16 +82,18 @@ class TripUpdate(UpdateBaseClass):
         super(UpdateBaseClass, self).__init__(model=model, modelform=modelform, modelname=modelname)
 
 
-class TripDelete(DeleteBaseClass):
+class TripDelete(DeleteBaseClass): #When user deletes the entire trip
     def __init__(self):
         model = Trip
         modelname = 'CreateTripForm'
         super(DeleteBaseClass, self).__init__(model=model, modelname=modelname)
 
-class TripDetaiView(LoginRequiredMixin, DetailView):
+
+#************************************ EXPENSES **********************************************************
+class TripDetaiView(LoginRequiredMixin, DetailView): #Trip expenses overall view
     template_name = 'tracker/trip_detail.html'
 
-    def get(self, request, pk):
+    def get(self, request, pk): #Get the aggregated information of the trip expenses
         user_can_access = check_user_has_access_to_trip(trip_id=pk, request_user_id=request.user.id)
         if user_can_access:
             form = AddExpenseForm()
@@ -101,19 +105,19 @@ class TripDetaiView(LoginRequiredMixin, DetailView):
         else:
             raise Http404('Access denied')
 
-    def post(self, request, pk):
+    def post(self, request, pk): #When user adds in new expenses for the trip
         add_expense(trip_id=pk, request=request)
         return redirect(reverse('tracker:trip_detail', args=[pk]))
 
-class TripExpense(LoginRequiredMixin, DetailView):
+class TripExpense(LoginRequiredMixin, DetailView): #List of all the expenses of the trip
     template_name = 'tracker/trip_expense.html'
 
-    def get(self, request, pk, expense_id=None):
+    def get(self, request, pk, expense_id=None): #Get all the expenses for the trip
         user_can_access = check_user_has_access_to_trip(trip_id=pk, request_user_id=request.user.id)
         if user_can_access:
             this_trip = Trip.objects.get(pk=pk)
             form = AddExpenseForm()
-            all_expenses = Expenses.objects.filter(trip=this_trip).order_by('id').reverse()
+            all_expenses = Expenses.objects.filter(trip=this_trip).order_by('id').reverse() #Reverse so that the latest entry appears at the top
             paginator = Paginator(all_expenses, 5)
             page_num = request.GET.get('page')
             page_obj = paginator.get_page(page_num)
@@ -122,12 +126,12 @@ class TripExpense(LoginRequiredMixin, DetailView):
         else:
             raise Http404('Access denied')
 
-    def post(self, request, pk):
+    def post(self, request, pk): #When user adds in new expenses for the trip
         add_expense(trip_id=pk, request=request)
         return redirect(reverse('tracker:trip_expense', args=[pk]))
 
 
-class TripExpenseUpdate(UpdateBaseClass):
+class TripExpenseUpdate(UpdateBaseClass): #When user update the expenses for the trip
     def __init__(self):
         model = Expenses
         modelform = AddExpenseForm
@@ -135,17 +139,18 @@ class TripExpenseUpdate(UpdateBaseClass):
         super(UpdateBaseClass, self).__init__(model=model, modelform=modelform, modelname=modelname)
 
 
-class TripExpenseDelete(DeleteBaseClass):
+class TripExpenseDelete(DeleteBaseClass): #When user deletes any expenses for the trip
     def __init__(self):
         model = Expenses
         modelname = 'expense'
         super(DeleteBaseClass, self).__init__(model=model, modelname=modelname)
 
 
-class TripBlog(LoginRequiredMixin, DetailView):
+#*************************************** BLOG *******************************************************
+class TripBlog(LoginRequiredMixin, DetailView): #List of all the blog entries for the trip
     template_name = 'tracker/trip_blog.html'
 
-    def get(self, request, pk):
+    def get(self, request, pk): #Get all the blog entries associated with the trip
         user_can_access = check_user_has_access_to_trip(trip_id=pk, request_user_id=request.user.id)
         if user_can_access:
             this_trip = Trip.objects.get(pk=pk)
@@ -155,7 +160,7 @@ class TripBlog(LoginRequiredMixin, DetailView):
         else:
             raise Http404('Access denied')
 
-class TripBlogCreate(LoginRequiredMixin, DetailView):
+class TripBlogCreate(LoginRequiredMixin, DetailView): #Create a blog entry using the traditional way rather than using modal/Ajax since it is easy to close the modal and discard changes
     template_name = 'tracker/create_blog_entry.html'
 
     def get(self, request, pk):
@@ -177,11 +182,70 @@ class TripBlogCreate(LoginRequiredMixin, DetailView):
         blog.save()
         return redirect(reverse('tracker:trip_blog', args=[pk]))
 
-#Debugging
-class Debugging(LoginRequiredMixin, View):
-    template_name = 'tracker/debug.html'
+class TripBlogUpdate(LoginRequiredMixin, DetailView): #Update the blog entry
+    template_name = 'tracker/create_blog_entry.html'
 
-    def get(self, request, pk=None):
-        form = AddExpenseForm()
-        ctx = {'form': form}
-        return render(request, self.template_name, ctx)
+    def get(self, request, pk, blog_id):
+        user_can_access = check_user_has_access_to_trip(trip_id=pk, request_user_id=request.user.id)
+        if user_can_access:
+            this_trip = Trip.objects.get(pk=pk)
+            entry = get_object_or_404(Blog, id=blog_id)
+            form = CreateBlogForm(instance=entry)
+            ctx = {'form' : form, 'trip' : this_trip}
+            return render(request, self.template_name, ctx)
+
+
+    def post(self, request, pk, blog_id):
+        entry = get_object_or_404(Blog, id=blog_id)
+        form = CreateBlogForm(request.POST, instance=entry)
+        if not form.is_valid():
+            ctx = {'form': form}
+            return render(request, self.template_name, ctx)
+
+        entry = form.save()
+        return redirect(reverse('tracker:trip_blog', args=[pk]))
+
+
+class TripBlogDelete(DeleteBaseClass): #Delete the blog entry
+    def __init__(self):
+        model = Blog
+        modelname = 'blog'
+        super(DeleteBaseClass, self).__init__(model=model, modelname=modelname)
+
+
+class BlogDetailView(LoginRequiredMixin, DetailView): #Show the full contents of the blog entry
+    template_name = 'tracker/blog_detail.html'
+
+    def get(self, request, pk, blog_id):
+        user_can_access = check_user_has_access_to_trip(trip_id=pk, request_user_id=request.user.id)
+        if user_can_access:
+            this_trip = Trip.objects.get(pk=pk)
+            entry = get_object_or_404(Blog, id=blog_id)
+            comments = Comment.objects.filter(blogpost=entry).order_by('created_at').reverse()
+            form = CommentForm()
+            ctx = {'trip': this_trip, 'form': form, 'blog': entry, 'comments':comments}
+            return render(request, self.template_name, ctx)
+
+
+    def post(self, request, pk, blog_id): #Adding in comments associated with the blog entry
+        blogpost = Blog.objects.get(pk=blog_id)
+        comment = Comment(text = request.POST['text'],
+                          blogpost = blogpost,
+                          owner = request.user)
+        comment.save()
+        return redirect(reverse('tracker:blog_detail', args=[pk, blog_id]))
+
+
+class CommentDelete(DeleteBaseClass):
+    def __init__(self):
+        model = Comment
+        modelname = 'comment'
+        super(DeleteBaseClass, self).__init__(model=model, modelname=modelname)
+
+
+"""
+Additional notes:
+- this_trip is passed in since base_sidebar requires 'trip.id' for navigation
+- For classes that extended from DeleteBaseClass, we don't need to explicitly pass in the blog_id/expense_id into kwargs. The URL contains blog_id/expense_id which will be passed in
+  as a parameter in the GET/POST method.
+"""

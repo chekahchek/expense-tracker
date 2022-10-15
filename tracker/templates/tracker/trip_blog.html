@@ -1,23 +1,31 @@
 {% extends "base_sidebar.html" %}
 {% load crispy_forms_tags %}
 {% block sidecontent %}
+{% load static %}
+{% include "delete_modal.html" %}
 
 <a class="btn btn-primary" id="addModal" href="{% url 'tracker:trip_blog_create' trip.id%}"> New Blog Entry </a>
 <h1>Blog</h1>
 <div class='spacer'></div>
 
 {% if blog_posts%}
+<table class='table'>
 {% for blog in blog_posts %}
-<div class='blogentry'>
-    <div class='blogtitle'><h4>{{blog.title}}</h4></div>
+<tr class='blogentry'>
+    <td>
+    <div class='blogtitle'><a href="{% url 'tracker:blog_detail' trip.id blog.id%}"> <h3>{{blog.title}}</h3> <a href="{% url 'tracker:trip_blog_update' trip.id blog.id%}" class="fas fa-edit" id="editTrip"></a> <a href="{% url 'tracker:trip_blog_delete' trip.id blog.id%}" class="fas fa-trash-alt"></a></div>
     <div class='blogdate'>
         <i class='far fa-calendar-alt'>
         {{blog.created_at}}
         </i>
     </div>
     <div class='blogpost'>{{blog.post | truncatechars:600}}</div>
-</div>
+    </td>
+</tr>
 
 {% endfor %}
+</table>
 {% endif %}
+
+<script src="{% static 'script.js' %}"></script>
 {% endblock %}

@@ -42,7 +42,15 @@ class DeleteBaseClass(LoginRequiredMixin, DetailView):
 
     def post(self, request, pk, **kwargs):
         if request.is_ajax():
-            id_key = kwargs['expense_id'] if self.modelname == 'expense' else pk
+            if self.modelname == 'expense':
+                id_key = kwargs['expense_id']
+            elif self.modelname == 'blog':
+                id_key = kwargs['blog_id']
+            elif self.modelname == 'comment':
+                id_key = kwargs['comment_id']
+            else:
+                id_key = pk
+
             instance = get_object_or_404(self.model, pk=id_key)
             instance.delete()
             return JsonResponse({"message": "success"})

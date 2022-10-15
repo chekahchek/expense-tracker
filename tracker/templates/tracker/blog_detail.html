@@ -1,0 +1,50 @@
+{% extends "base_sidebar.html" %}
+{% load crispy_forms_tags %}
+{% block sidecontent %}
+{% load static %}
+{% include "delete_modal.html" %}
+
+<style>
+    #div_id_text .control-label {
+        display:none;
+    }
+</style>
+
+<tr class='blogentry'>
+    <td>
+    <div class='blogtitle'><h3>{{blog.title}}</h3> </div>
+    <div class='blogdate'>
+        <i class='far fa-calendar-alt'>
+        {{blog.created_at}}
+        </i>
+    </div>
+    <div class='blogpost'>{{blog.post}}</div>
+    </td>
+</tr>
+
+<br><br>
+<h5> New Comment</h5>
+<form action="" method="post">
+{% csrf_token %}
+{{ form | crispy }}
+<input type="submit" value="Submit">
+</form>
+
+<br><br>
+
+{% if comments %}
+<table  class='table'>
+{% for comment in comments %}
+    <tr class='blogentry'>
+    <td class='comment'>
+        <b>{{comment.owner}}</b> <a href="{% url 'tracker:comment_delete' trip.id blog.id comment.id%}" class="fas fa-trash-alt"></a> <br>
+        {{comment.text}} <br><br>
+        <div class='blogdate'> <i class='far fa-calendar-alt'> {{comment.created_at}} </i> </div> <br>
+    </td>
+    </tr>
+{% endfor %}
+</table>
+{% endif %}
+
+<script src="{% static 'script.js' %}"></script>
+{% endblock %}

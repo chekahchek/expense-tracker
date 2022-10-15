@@ -7,6 +7,29 @@ body {
     top: 56px;
 }
 
+.form-outline {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    padding: 7% 10%;
+    background-color: #FFF;
+    border-radius: 10px;
+    border-width: 1px;
+    border-style: solid;
+    text-align: center;
+}
+
+.form-outline input {
+    width: 100%;
+    height: 35px;
+    border-radius: 5px;
+    border-width: 1px;
+    border-style: solid;
+}
+
 #body-row {
     margin-left:0;
     margin-right:0;
@@ -71,91 +94,32 @@ body {
   padding-left: 10px;
 }
 
-.p-4 {
-  padding: 1.5rem!important;
+@media (min-width: 576px) {
+    .main-body{
+      width: 80%;
+      margin: auto;
+    }
 }
 
-.shadow-sm {
-  box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+@media (max-width: 575px) {
+    .main-body{
+      width: 100%;
+      margin: auto;
+      font-size: 0.7rem;
+    }
 }
 
-.user-dashboard-info-box .title {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 30px 0;
+th {
+  border-top: none !important;
+  padding-left:20.8px !important;
 }
 
-.user-dashboard-info-box .candidates-list td {
-  vertical-align: middle;
+.card {
+  border-radius: 20px;
 }
 
-.user-dashboard-info-box td li {
-  margin: 0 4px;
-}
-
-.user-dashboard-info-box .table thead th {
-  border-bottom: none;
-}
-
-.table.manage-candidates-top th {
-  border: 0;
-}
-
-.table.manage-candidates-top {
-  min-width: 650px;
-}
-
-.table.manage-candidates-top th {
-  padding-left: 0;
-}
-
-.user-dashboard-info-box .candidate-list-details ul {
-  color: #969696;
-}
-
-/* Candidate List */
-.candidate-list {
-  background: #ffffff;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  border-bottom: 1px solid #eeeeee;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  padding: 20px;
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
-}
-
-.candidate-list-title {
-  margin-bottom: 5px;
-}
-
-.candidate-list-details ul {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  margin-bottom: 0px;
-}
-.candidate-list-details ul li {
-  margin: 5px 10px 5px 0px;
-  font-size: 15px;
-}
-
-
-.bg-white {
-  background-color: #ffffff !important;
-}
-
-.shadow-sm {
-  box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+.table td {
+  padding: 1.3rem;
 }
 
 
@@ -185,8 +149,17 @@ tr:hover .fas {
 
 }
 
-.blogtitle h4 {
+.blogentry td {
+    padding-left: 0px;
+}
+
+.blogtitle h3 {
     margin-bottom: 0px;
+    display: inline;
+}
+
+.blogtitle fas {
+    display: inline;
 }
 
 .blogdate {
@@ -199,5 +172,11 @@ tr:hover .fas {
     padding-top: 10px;
 }
 
+
+.comment {
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-color: #b6b7b9;
+}
 
 
